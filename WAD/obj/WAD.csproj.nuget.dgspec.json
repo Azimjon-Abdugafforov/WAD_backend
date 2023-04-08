@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\acer\\Desktop\\WAD\\WAD\\WAD\\WAD.csproj": {}
+    "C:\\Users\\acer\\Desktop\\WAD_Final_App_12189\\WAD\\WAD\\WAD.csproj": {}
   },
   "projects": {
-    "C:\\Users\\acer\\Desktop\\WAD\\WAD\\WAD\\WAD.csproj": {
+    "C:\\Users\\acer\\Desktop\\WAD_Final_App_12189\\WAD\\WAD\\WAD.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\acer\\Desktop\\WAD\\WAD\\WAD\\WAD.csproj",
+        "projectUniqueName": "C:\\Users\\acer\\Desktop\\WAD_Final_App_12189\\WAD\\WAD\\WAD.csproj",
         "projectName": "WAD",
-        "projectPath": "C:\\Users\\acer\\Desktop\\WAD\\WAD\\WAD\\WAD.csproj",
+        "projectPath": "C:\\Users\\acer\\Desktop\\WAD_Final_App_12189\\WAD\\WAD\\WAD.csproj",
         "packagesPath": "C:\\Users\\acer\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\acer\\Desktop\\WAD\\WAD\\WAD\\obj\\",
+        "outputPath": "C:\\Users\\acer\\Desktop\\WAD_Final_App_12189\\WAD\\WAD\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\acer\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -40,6 +40,10 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[6.0.0, )"
@@ -54,9 +58,17 @@
               "target": "Package",
               "version": "[6.0.0, )"
             },
+            "Microsoft.IdentityModel.Tokens": {
+              "target": "Package",
+              "version": "[6.14.1, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.2.3, )"
+            },
+            "Swashbuckle.AspNetCore.Filters": {
+              "target": "Package",
+              "version": "[7.0.6, )"
             }
           },
           "imports": [
