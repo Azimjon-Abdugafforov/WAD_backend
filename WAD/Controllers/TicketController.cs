@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
@@ -25,14 +26,14 @@ namespace WAD_Backend.Controllers
 
 
         // GET: TicketController
-        [HttpGet]
+        [HttpGet, Authorize]
         public async Task<ActionResult<List<Tickets>>> GetTicket()
         {
             return Ok(await _dbConnection.Tickets.ToListAsync());
         }
 
         // GET: TicketController/Details/5
-        [HttpGet("{id}", Name = "GetTicketById")]
+        [HttpGet("{id}", Name = "GetTicketById"), Authorize]
         public async Task<ActionResult<List<Tickets>>> GetTicketById(int id)
         {
             return Ok(await _dbConnection.Tickets.FindAsync(id));
@@ -40,7 +41,7 @@ namespace WAD_Backend.Controllers
 
 
         // GET: TicketController/Create
-        [HttpPost]
+        [HttpPost, Authorize]
         public async Task<ActionResult<List<Tickets>>> InsertTicket(Tickets ticket)
         {
             _dbConnection.Tickets.Add(ticket);
@@ -50,7 +51,7 @@ namespace WAD_Backend.Controllers
         }
 
         // GET: TicketController/Edit/5
-        [HttpPut]
+        [HttpPut, Authorize]
         public async Task<ActionResult<List<Tickets>>> UpdateTicket(Tickets ticket)
         {
             var foundTicket = await _dbConnection.Tickets.FindAsync(ticket.Id);
@@ -75,7 +76,7 @@ namespace WAD_Backend.Controllers
 
 
         // GET: TicketController/Delete/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize]
         public async Task<ActionResult<List<Tickets>>> Delete(int id)
         {
             var foundTicket = await _dbConnection.Tickets.FindAsync(id);

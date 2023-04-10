@@ -9,6 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using WAD.Data;
+using WAD.Services.UserService;
 
 namespace WAD.Controllers
 {
@@ -18,14 +19,17 @@ namespace WAD.Controllers
     {
 
         private readonly DataContext _dbConnection;
-       
+        private readonly IUserService _userService;
+
+
         public static User user = new User();
         private readonly IConfiguration _configuration;
 
-        public AuthController(IConfiguration configuration, DataContext data)
+        public AuthController(IConfiguration configuration, DataContext data, IUserService userService)
         {
             _configuration = configuration;
             _dbConnection = data;
+            _userService = userService;
         }
 
 
@@ -62,6 +66,27 @@ namespace WAD.Controllers
 
             return Ok(token);
         }
+
+        [HttpPost("refresh-token") ]
+        public async Task<ActionResult<string>> RefreshToken()
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+
+            if (!user.RefreshToken.Equals(refreshToken))
+            {
+                return Unauthorized("Invalid Refresh Token.");
+            }
+            else if (user.TokenExpires < DateTime.Now)
+            {
+                return Unauthorized("Token expired.");
+            }
+
+            string token = CreateToken(user);
+            var newRefreshToken = GenerateRefreshToken();
+            SetRefreshToken(newRefreshToken);
+
+            return Ok(token);
+        }
         private void SetRefreshToken(RefreshToken newRefreshToken)
         {
             var cookieOptions = new CookieOptions
@@ -77,16 +102,11 @@ namespace WAD.Controllers
         }
 
         [HttpGet, Authorize]
-        public async Task<ActionResult<List<Actors>>> GetActors()
+        public ActionResult<string> GetMe()
         {
-            var userName = _dbConnection.Actors.ToListAsync();
-            return Ok(await userName);
+            var userName = _userService.GetMyName();
+            return Ok(userName);
         }
-
-
-
-
-       
 
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
