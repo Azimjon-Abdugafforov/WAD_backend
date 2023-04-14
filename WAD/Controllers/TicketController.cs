@@ -4,10 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using System.Collections.Generic;
+using System.Data;
 using System.Threading.Tasks;
 using System.Transactions;
-using WAD;
 using WAD.Data;
+using WAD.Models;
 
 namespace WAD_Backend.Controllers
 {
@@ -15,6 +16,8 @@ namespace WAD_Backend.Controllers
 
     [ApiController]
     [Route("[controller]")]
+    [ Authorize(Roles = "User")]
+
     public class TicketController : Controller
     {
 
@@ -26,14 +29,14 @@ namespace WAD_Backend.Controllers
 
 
         // GET: TicketController
-        [HttpGet, Authorize]
+        [HttpGet]
         public async Task<ActionResult<List<Tickets>>> GetTicket()
         {
             return Ok(await _dbConnection.Tickets.ToListAsync());
         }
 
         // GET: TicketController/Details/5
-        [HttpGet("{id}", Name = "GetTicketById"), Authorize]
+        [HttpGet("{id}", Name = "GetTicketById")]
         public async Task<ActionResult<List<Tickets>>> GetTicketById(int id)
         {
             return Ok(await _dbConnection.Tickets.FindAsync(id));
@@ -41,7 +44,7 @@ namespace WAD_Backend.Controllers
 
 
         // GET: TicketController/Create
-        [HttpPost, Authorize]
+        [HttpPost]
         public async Task<ActionResult<List<Tickets>>> InsertTicket(Tickets ticket)
         {
             _dbConnection.Tickets.Add(ticket);
@@ -51,7 +54,7 @@ namespace WAD_Backend.Controllers
         }
 
         // GET: TicketController/Edit/5
-        [HttpPut, Authorize]
+        [HttpPut]
         public async Task<ActionResult<List<Tickets>>> UpdateTicket(Tickets ticket)
         {
             var foundTicket = await _dbConnection.Tickets.FindAsync(ticket.Id);
@@ -76,7 +79,7 @@ namespace WAD_Backend.Controllers
 
 
         // GET: TicketController/Delete/5
-        [HttpDelete("{id}"), Authorize]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<List<Tickets>>> Delete(int id)
         {
             var foundTicket = await _dbConnection.Tickets.FindAsync(id);
@@ -90,8 +93,5 @@ namespace WAD_Backend.Controllers
 
             return Ok(await _dbConnection.Tickets.ToListAsync());
         }
-
-
-
     }
 }

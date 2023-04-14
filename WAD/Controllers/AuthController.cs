@@ -5,10 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System.Diagnostics.CodeAnalysis;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using WAD.Data;
+using WAD.Models;
 using WAD.Services.UserService;
 
 namespace WAD.Controllers
@@ -21,8 +23,8 @@ namespace WAD.Controllers
         private readonly DataContext _dbConnection;
         private readonly IUserService _userService;
 
-
         public static User user = new User();
+        public static UserDto userDto = new UserDto();
         private readonly IConfiguration _configuration;
 
         public AuthController(IConfiguration configuration, DataContext data, IUserService userService)
@@ -43,28 +45,35 @@ namespace WAD.Controllers
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
 
-            return Ok(user);
+            return  Ok( user);
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<string>> Login(UserDto request)
+        public async Task<ActionResult<List<UserDto>>> Login(MainUser request)
         {
-            if (user.Username != request.Username)
+            if (request.Username == null || request.Password == null)
             {
-                return BadRequest("User not found.");
+                return BadRequest("Username or password is missing.");
             }
 
-            if (!VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
+            var matchingOp = _dbConnection.UserDto.FindAsync(request.Username);
+            var usr = await matchingOp;
+
+            if (usr == null)
             {
-                return BadRequest("Wrong password.");
+                return BadRequest("There is no such user in the database!");
             }
 
-            string token = CreateToken(user);
+
+
+
+            
+            string token = CreateToken(usr);
 
             var refreshToken = GenerateRefreshToken();
             SetRefreshToken(refreshToken);
 
-            return Ok(token);
+            return Ok( token);
         }
 
         [HttpPost("refresh-token") ]
@@ -81,7 +90,7 @@ namespace WAD.Controllers
                 return Unauthorized("Token expired.");
             }
 
-            string token = CreateToken(user);
+            string token = CreateToken(userDto);
             var newRefreshToken = GenerateRefreshToken();
             SetRefreshToken(newRefreshToken);
 
@@ -121,18 +130,18 @@ namespace WAD.Controllers
             var refreshToken = new RefreshToken
             {
                 Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
-                Expires = DateTime.Now.AddDays(7),
+                Expires = DateTime.Now.AddSeconds(30),
                 Created = DateTime.Now
             };
 
             return refreshToken;
         }
-        private string CreateToken(User user)
+        private string CreateToken(UserDto userDto)
         {
             List<Claim> claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, "Admin")
+                new Claim(ClaimTypes.Name, userDto.Username),
+                new Claim(ClaimTypes.Role, userDto.Role)
             };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
@@ -142,7 +151,7 @@ namespace WAD.Controllers
 
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.AddDays(1),
+                expires: DateTime.Now.AddMinutes(5),
                 signingCredentials: creds);
 
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);

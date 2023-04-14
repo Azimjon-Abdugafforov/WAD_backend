@@ -198,3 +198,4 @@ C:\Users\acer\Desktop\WAD_Final_App_12189\WAD\WAD\bin\Debug\net6.0\Microsoft.Ext
 C:\Users\acer\Desktop\WAD_Final_App_12189\WAD\WAD\bin\Debug\net6.0\Scrutor.dll
 C:\Users\acer\Desktop\WAD_Final_App_12189\WAD\WAD\bin\Debug\net6.0\Swashbuckle.AspNetCore.Filters.dll
 C:\Users\acer\Desktop\WAD_Final_App_12189\WAD\WAD\bin\Debug\net6.0\Swashbuckle.AspNetCore.Filters.Abstractions.dll
+C:\Users\acer\Desktop\WAD_Final_App_12189\WAD\WAD\bin\Debug\net6.0\libman.json

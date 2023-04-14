@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using WAD.Models;
 
 namespace WAD.Data
 {
@@ -10,5 +11,10 @@ namespace WAD.Data
         }
         public DbSet<Actors> Actors { get; set; }
         public DbSet<Tickets> Tickets { get; set; }
+        public DbSet<ImageModel> Images { get; set; }
+        public DbSet<UserDto> UserDto { get; set; }
+
+
+        
     }
 }

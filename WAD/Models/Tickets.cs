@@ -1,4 +1,4 @@
-﻿namespace WAD
+﻿namespace WAD.Models
 {
     public class Tickets
     {
