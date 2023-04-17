@@ -1,4 +1,4 @@
-﻿namespace JwtWebApiTutorial
+﻿namespace WAD.Models
 {
     public class RefreshToken
     {

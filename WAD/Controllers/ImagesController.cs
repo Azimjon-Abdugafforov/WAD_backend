@@ -56,11 +56,27 @@ namespace WAD.Controllers
               return Ok(Result);
             
         }
+        [HttpGet]
+        public async Task<ActionResult> GetImages(string directoryPath)
+        {
+            try
+            {
+                string imagePath = directoryPath + ".png";
+                var files = GetFilePath(imagePath);
+                return Ok(files);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
 
         [NonAction]
         private string GetFilePath(string imageCode)
         {
-            return this._environment.WebRootPath + "\\Uploads\\Product\\" + imageCode;
+            return this._environment.WebRootPath + imageCode;
         }
     }
 }

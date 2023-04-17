@@ -13,10 +13,9 @@ using WAD.Models;
 namespace WAD_Backend.Controllers
 {
 
-
     [ApiController]
     [Route("[controller]")]
-    [ Authorize(Roles = "User")]
+    [ Authorize(Roles = "USER")]
 
     public class TicketController : Controller
     {

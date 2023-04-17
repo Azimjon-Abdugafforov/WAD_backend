@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.InteropServices;
 using WAD.Data;
 using WAD.Models;
 
@@ -16,7 +18,7 @@ namespace WAD.Controllers
             _dbConnection = dbConnection;
         }
 
-        [HttpGet]
+        [HttpGet, Authorize]
         public async Task<ActionResult<List<UserDto>>> GetEmployees()
         {
             return Ok(await _dbConnection.UserDto.ToListAsync());

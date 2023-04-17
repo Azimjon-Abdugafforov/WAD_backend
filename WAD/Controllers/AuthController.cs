@@ -1,7 +1,7 @@
-﻿using JwtWebApiTutorial;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -45,39 +45,38 @@ namespace WAD.Controllers
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
 
-            return  Ok( user);
+            return Ok(user);
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<List<UserDto>>> Login(MainUser request)
+        public async Task<ActionResult<List<object>>> Login(MainUser request)
         {
             if (request.Username == null || request.Password == null)
             {
                 return BadRequest("Username or password is missing.");
             }
 
-            var matchingOp = _dbConnection.UserDto.FindAsync(request.Username);
-            var usr = await matchingOp;
-
-            if (usr == null)
+            var user = await _dbConnection.UserDto.FindAsync(request.Username);
+            if (user == null)
             {
-                return BadRequest("There is no such user in the database!");
+                return Unauthorized();
             }
 
+            if (!request.Password.Equals(user.Password))
+            {
+                return Unauthorized();
+            }
 
-
-
-            
-            string token = CreateToken(usr);
-
+            string token = CreateToken(user);
             var refreshToken = GenerateRefreshToken();
+
             SetRefreshToken(refreshToken);
 
-            return Ok( token);
+            return Ok(new { user.Username, user.Role, token, refreshToken });
         }
 
         [HttpPost("refresh-token") ]
-        public async Task<ActionResult<string>> RefreshToken()
+        public async Task<ActionResult<object>> RefreshToken()
         {
             var refreshToken = Request.Cookies["refreshToken"];
 
@@ -94,7 +93,7 @@ namespace WAD.Controllers
             var newRefreshToken = GenerateRefreshToken();
             SetRefreshToken(newRefreshToken);
 
-            return Ok(token);
+            return Ok(new {token, newRefreshToken});
         }
         private void SetRefreshToken(RefreshToken newRefreshToken)
         {
@@ -108,13 +107,8 @@ namespace WAD.Controllers
             user.RefreshToken = newRefreshToken.Token;
             user.TokenCreated = newRefreshToken.Created;
             user.TokenExpires = newRefreshToken.Expires;
-        }
 
-        [HttpGet, Authorize]
-        public ActionResult<string> GetMe()
-        {
-            var userName = _userService.GetMyName();
-            return Ok(userName);
+            _dbConnection.UserDto.Add(userDto);
         }
 
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
@@ -130,7 +124,7 @@ namespace WAD.Controllers
             var refreshToken = new RefreshToken
             {
                 Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
-                Expires = DateTime.Now.AddSeconds(30),
+                Expires = DateTime.Now.AddHours(1),
                 Created = DateTime.Now
             };
 
@@ -151,13 +145,23 @@ namespace WAD.Controllers
 
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(5),
+                expires: DateTime.Now.AddHours(5),
                 signingCredentials: creds);
 
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
             return jwt;
         }
+
+        private bool IsTokenExpired(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadJwtToken(token);
+            var exp = jwtToken.ValidTo;
+
+            return exp < DateTime.UtcNow;
+        }
+
         private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512(passwordSalt))
