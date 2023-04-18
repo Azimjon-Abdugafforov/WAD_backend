@@ -1,11 +1,19 @@
 {
   "Version": 1,
-  "Hash": "TrV6Y2djTQDoUZoBxQy0QH67fD3QtJrBfbMAZLILLKQ=",
+  "Hash": "bxSpeNlAgRCSCYxwG4ORBmmunjVQP9mS7Ux2U8orAKA=",
   "Source": "WAD",
   "BasePath": "_content/WAD",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "WAD\\wwwroot",
+      "Source": "WAD",
+      "ContentRoot": "C:\\Users\\acer\\Desktop\\WAD_Final_App_12189\\WAD\\WAD\\wwwroot\\",
+      "BasePath": "_content/WAD",
+      "Pattern": "**"
+    }
+  ],
   "Assets": []
 }

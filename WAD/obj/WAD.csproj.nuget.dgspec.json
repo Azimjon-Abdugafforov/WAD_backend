@@ -58,9 +58,19 @@
               "target": "Package",
               "version": "[6.0.0, )"
             },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
             "Microsoft.IdentityModel.Tokens": {
               "target": "Package",
               "version": "[6.14.1, )"
+            },
+            "SQLite.CodeFirst": {
+              "target": "Package",
+              "version": "[1.7.0.34, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
@@ -69,6 +79,10 @@
             "Swashbuckle.AspNetCore.Filters": {
               "target": "Package",
               "version": "[7.0.6, )"
+            },
+            "System.Data.SQLite": {
+              "target": "Package",
+              "version": "[1.0.117, )"
             }
           },
           "imports": [

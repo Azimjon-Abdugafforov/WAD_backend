@@ -15,7 +15,6 @@ namespace WAD_Backend.Controllers
 
     [ApiController]
     [Route("[controller]")]
-    [ Authorize(Roles = "USER")]
 
     public class TicketController : Controller
     {
@@ -44,8 +43,11 @@ namespace WAD_Backend.Controllers
 
         // GET: TicketController/Create
         [HttpPost]
+        [Authorize(Roles = "ADMIN")]
         public async Task<ActionResult<List<Tickets>>> InsertTicket(Tickets ticket)
         {
+
+
             _dbConnection.Tickets.Add(ticket);
             await _dbConnection.SaveChangesAsync();
 
@@ -54,6 +56,7 @@ namespace WAD_Backend.Controllers
 
         // GET: TicketController/Edit/5
         [HttpPut]
+        [Authorize(Roles = "ADMIN")]
         public async Task<ActionResult<List<Tickets>>> UpdateTicket(Tickets ticket)
         {
             var foundTicket = await _dbConnection.Tickets.FindAsync(ticket.Id);
@@ -79,6 +82,7 @@ namespace WAD_Backend.Controllers
 
         // GET: TicketController/Delete/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "ADMIN")]
         public async Task<ActionResult<List<Tickets>>> Delete(int id)
         {
             var foundTicket = await _dbConnection.Tickets.FindAsync(id);

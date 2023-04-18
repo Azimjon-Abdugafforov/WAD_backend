@@ -14,6 +14,11 @@ namespace WAD.Data
         public DbSet<ImageModel> Images { get; set; }
         public DbSet<UserDto> UserDto { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ImageModel>().Property(i => i.Data).HasColumnType("image");
+        }
+
 
         
     }

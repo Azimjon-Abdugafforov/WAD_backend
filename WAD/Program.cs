@@ -104,6 +104,7 @@ app.UseCors("NgOrigins");
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
+app.UseStaticFiles();
 
 app.UseAuthorization();
 
