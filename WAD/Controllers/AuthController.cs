@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿   using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -20,7 +20,8 @@ namespace WAD.Controllers
     public class AuthController : ControllerBase
     {
 
-        private readonly DataContext _dbConnection;
+        private readonly DataContext _dbConnection; 
+         
         private readonly IUserService _userService;
 
         public static User user = new User();
@@ -36,17 +37,6 @@ namespace WAD.Controllers
 
 
 
-        [HttpPost("register")]
-        public async Task<ActionResult<User>> Register(UserDto request)
-        {
-            CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
-
-            user.Username = request.Username;
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
-
-            return Ok(user);
-        }
 
         [HttpPost("login")]
         public async Task<ActionResult<List<object>>> Login(MainUser request)
@@ -153,14 +143,7 @@ namespace WAD.Controllers
             return jwt;
         }
 
-        private bool IsTokenExpired(string token)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var jwtToken = tokenHandler.ReadJwtToken(token);
-            var exp = jwtToken.ValidTo;
-
-            return exp < DateTime.UtcNow;
-        }
+       
 
         private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {

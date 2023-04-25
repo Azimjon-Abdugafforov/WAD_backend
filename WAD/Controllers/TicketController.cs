@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Entity;
 using System.Threading.Tasks;
 using System.Transactions;
 using WAD.Data;
@@ -18,7 +19,6 @@ namespace WAD_Backend.Controllers
 
     public class TicketController : Controller
     {
-
         private readonly DataContext _dbConnection;
         public TicketController(DataContext dbContext)
         {
@@ -26,35 +26,48 @@ namespace WAD_Backend.Controllers
         }
 
 
-        // GET: TicketController
         [HttpGet]
         public async Task<ActionResult<List<Tickets>>> GetTicket()
         {
             return Ok(await _dbConnection.Tickets.ToListAsync());
         }
 
-        // GET: TicketController/Details/5
         [HttpGet("{id}", Name = "GetTicketById")]
         public async Task<ActionResult<List<Tickets>>> GetTicketById(int id)
         {
             return Ok(await _dbConnection.Tickets.FindAsync(id));
         }
 
-
-        // GET: TicketController/Create
         [HttpPost]
+        [Authorize(Roles ="ADMIN")]
+        public async Task<IActionResult> CreateTicket( Tickets model)
+        {
+            var ticket = new Tickets
+            {
+                Title = model.Title,
+                Description = model.Description,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+                ActorsId = model.ActorsId,
+                Status = model.Status
+            };
+           
+            await _dbConnection.Tickets.AddAsync(ticket);
+            await _dbConnection.SaveChangesAsync();
+
+            return Ok(ticket.Id);
+        }
+
+       /* [HttpPost]
         [Authorize(Roles = "ADMIN")]
         public async Task<ActionResult<List<Tickets>>> InsertTicket(Tickets ticket)
         {
-
-
             _dbConnection.Tickets.Add(ticket);
             await _dbConnection.SaveChangesAsync();
 
             return Ok(await _dbConnection.Tickets.ToListAsync());
         }
-
-        // GET: TicketController/Edit/5
+       */
         [HttpPut]
         [Authorize(Roles = "ADMIN")]
         public async Task<ActionResult<List<Tickets>>> UpdateTicket(Tickets ticket)
@@ -71,7 +84,7 @@ namespace WAD_Backend.Controllers
             foundTicket.CreatedAt = ticket.CreatedAt;
             foundTicket.UpdatedAt = ticket.UpdatedAt;
             foundTicket.Status = ticket.Status;
-            foundTicket.ActorsId = ticket.ActorsId;
+            foundTicket.ActorsId = ticket.ActorsId; 
 
             await _dbConnection.SaveChangesAsync();
 
@@ -80,7 +93,6 @@ namespace WAD_Backend.Controllers
         }
 
 
-        // GET: TicketController/Delete/5
         [HttpDelete("{id}")]
         [Authorize(Roles = "ADMIN")]
         public async Task<ActionResult<List<Tickets>>> Delete(int id)
@@ -91,7 +103,6 @@ namespace WAD_Backend.Controllers
                 return BadRequest("The selected ticket does not exist in the database");
             }
             _dbConnection.Tickets.Remove(foundTicket);
-
             await _dbConnection.SaveChangesAsync();
 
             return Ok(await _dbConnection.Tickets.ToListAsync());
