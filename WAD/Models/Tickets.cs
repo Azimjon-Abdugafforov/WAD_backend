@@ -9,7 +9,5 @@
         public DateTime UpdatedAt { get; set; }
         public int ActorsId { get; set; }
         public string Status { get; set; } = string.Empty;
-        public byte[] Image { get; set; } 
-
     }
 }

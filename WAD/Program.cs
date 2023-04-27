@@ -8,6 +8,7 @@ using Swashbuckle.AspNetCore.Filters;
 using System.Net;
 using System.Text;
 using WAD.Data;
+using WAD.Services.EmploployeeService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<EmployeeService, EmployeeService>();
 
 builder.Services.AddDbContext<DataContext>(options =>
 {

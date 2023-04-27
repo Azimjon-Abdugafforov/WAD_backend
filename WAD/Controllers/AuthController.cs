@@ -46,23 +46,23 @@ namespace WAD.Controllers
                 return BadRequest("Username or password is missing.");
             }
 
-            var user = await _dbConnection.UserDto.FindAsync(request.Username);
+            var user = await _dbConnection.UserDto.FirstOrDefaultAsync(u => u.Username == request.Username);
+
             if (user == null)
             {
                 return Unauthorized();
             }
 
-            if (!request.Password.Equals(user.Password))
+            if (!request.Password.Equals(user.Password.ToString()))
             {
                 return Unauthorized();
             }
-
             string token = CreateToken(user);
             var refreshToken = GenerateRefreshToken();
 
             SetRefreshToken(refreshToken);
 
-            return Ok(new { user.Username, user.Role, token, refreshToken });
+            return Ok(new { user.Username, user.Role, user.Branch, token, refreshToken });
         }
 
         [HttpPost("refresh-token") ]

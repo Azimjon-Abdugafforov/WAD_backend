@@ -13,6 +13,9 @@ namespace WAD.Data
         public DbSet<Tickets> Tickets { get; set; }
         public DbSet<ImageModel> Images { get; set; }
         public DbSet<UserDto> UserDto { get; set; }
+     
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
